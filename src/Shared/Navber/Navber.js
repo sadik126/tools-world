@@ -1,10 +1,23 @@
-import React from 'react';
-import { Link, useMatch, useResolvedPath } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
 import Theme from '../Theme/Theme';
 import logo from '../../../src/assets/tools_logo.png';
+import { Authcontext } from '../../Context/Authprovider';
 
 
 const Navber = () => {
+    const { user, Logout } = useContext(Authcontext)
+
+    const nevigate = useNavigate();
+
+    const handleLogout = () => {
+        Logout()
+            .then(() => {
+                nevigate('/login')
+
+            })
+            .catch(err => console.log(err))
+    }
 
     function CustomLink({ children, to, ...props }) {
         let resolved = useResolvedPath(to);
@@ -32,6 +45,9 @@ const Navber = () => {
 
         <li><Link to='/about'>About</Link></li>
         <li><Link to='/contact'>Contact</Link></li>
+        {
+            user?.uid ? <button onClick={handleLogout} className="btn login">Log out</button> : <Link to={'/login'}><button className="btn login">Login</button></Link>
+        }
         {
             // user?.uid ? <li><Link to='' className='text-orange-700'>Welcome  {user.displayName}</Link></li> : <li><Link to=''></Link></li>
         }
