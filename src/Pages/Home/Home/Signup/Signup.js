@@ -1,16 +1,118 @@
-import React from 'react';
+import { getAuth } from 'firebase/auth';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Authcontext } from '../../../../Context/Authprovider';
+import { useUpdateProfile } from 'react-firebase-hooks/auth';
+import app from '../../../../Firebase/Firebase.config';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 const Signup = () => {
-    const { register, formState: { errors }, handleSubmit } = useForm();
+    const { register, formState: { errors }, handleSubmit, reset } = useForm();
+    const auth = getAuth(app);
+
+    const { createUser } = useContext(Authcontext)
+
+    const [signupError, setsignupError] = useState('')
+
+    const [updateProfile, updating, updateError] = useUpdateProfile(auth);
+
+    const location = useLocation()
+
+    const nevigate = useNavigate();
+
+    const from = location.state?.from?.pathname || '/';
+
+
+
+    const imagehostkey = 'e0e49e32b3b219f54116af3c0da0de50';
 
     const onSubmit = async data => {
+        const image = data.image[0];
+        const formData = new FormData();
+        formData.append('image', image)
+        const url = `https://api.imgbb.com/1/upload?key=${imagehostkey}`
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => res.json())
+            .then(async imgData => {
+                console.log(imgData)
+                if (imgData.success) {
+                    console.log(imgData.data.url)
+
+                    await createUser(data.email, data.password)
+                        .then(async result => {
+                            const user = result.user;
+                            console.log(user)
+                            saveuser(data.Name, data.Email, data.Password)
+
+
+                            // toast('User created successfully')
+                            // const userInfo = {
+                            //     displayName: data.Name
+                            // }
+
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            setsignupError(err.message)
+                        })
+
+                    await updateProfile({ displayName: data.name, photoURL: imgData.data.url })
+
+                    // Swal({
+                    //     title: "success",
+                    //     text: "Now you can login our website",
+                    //     icon: "success",
+                    // })
+                    // const user = {
+                    //     name: data.name,
+                    //     email: data.email,
+
+                    //     image: imgData.data.url
+                    // }
+
+
+
+                    saveuser(data.name, data.email, imgData.data.url)
+
+
+                }
+
+
+            })
+
         console.log(data)
+        reset();
+    }
+
+
+
+    const saveuser = (name, email, image) => {
+        const user = { name: name, email: email, image: image }
+
+        fetch('http://localhost:4040/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(result => {
+                console.log(result)
+                toast.success(`${result.displayName} Added successfully`)
+                nevigate(from, { replace: true })
+                // navigate('/dashboard/manageDoctor')
+            })
+
     }
     return (
         <>
-            <section class="h-screen">
+            <section class="h-screen my-24">
                 <div class="container h-full px-6 py-24">
                     <div
                         class="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between">
@@ -21,6 +123,7 @@ const Signup = () => {
                                 alt="Phone image" />
                         </div>
                         <div class="md:w-8/12 lg:ml-6 lg:w-5/12">
+                            <h1 className='text-3xl uppercase my-8 font-bold'>Register here</h1>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div class="relative mb-6" data-te-input-wrapper-init>
                                     <input
@@ -87,6 +190,29 @@ const Signup = () => {
                                     <label className="label">
                                         {errors.password?.type === 'required' && <span className=" text-red-600 font-bold">{errors?.password?.message}</span>}
                                         {errors.password?.type === 'minLength' && <span className=" text-red-600 font-bold">{errors?.password?.message}</span>}
+
+
+                                    </label>
+                                </div>
+
+
+                                <div class="relative mb-6" data-te-input-wrapper-init>
+                                    <input {...register("image", {
+                                        required: { value: true, message: 'Image is required' }
+                                    })}
+                                        type="file"
+                                        class="input input-bordered w-full "
+                                        id="exampleFormControlInput33"
+                                        placeholder="Image"
+                                        accept="image/*" />
+                                    {/* <label
+                                        for="exampleFormControlInput33"
+                                        class="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[1.15rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-neutral-200"
+                                    >
+                                    </label> */}
+                                    <label className="label">
+                                        {errors.image?.type === 'required' && <span className=" text-red-600 font-bold">{errors?.image?.message}</span>}
+                                        {/* {errors.password?.type === 'minLength' && <span className=" text-red-600 font-bold">{errors?.password?.message}</span>} */}
 
 
                                     </label>
@@ -176,6 +302,9 @@ const Signup = () => {
                                     Continue with Twitter
                                 </a> */}
                             </form>
+                            {
+                                signupError && <p className='text-red-600'>{signupError}</p>
+                            }
                         </div>
                     </div>
                 </div>

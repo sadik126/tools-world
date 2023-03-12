@@ -61,7 +61,7 @@ const Authprovider = ({ children }) => {
     return (
         <>
             <Authcontext.Provider value={authInfo}>
-                {Children}
+                {children}
 
             </Authcontext.Provider>
 

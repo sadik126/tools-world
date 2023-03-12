@@ -21,7 +21,7 @@ const Tools = () => {
     }
 
     if (isError) {
-        Swal({
+        Swal.fire({
             title: "Fetch Error",
             text: "Can Not Fatch Our tools",
             icon: "error",

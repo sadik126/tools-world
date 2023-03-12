@@ -41,13 +41,33 @@ const Navber = () => {
     const menuItems = <>
         <li><CustomLink to='/' >Home</CustomLink></li>
         <li><CustomLink to='/tools' >Tools</CustomLink></li>
-        <li><Link to='/dashboard' >Dashboard</Link></li>
+        <li><CustomLink to='/dashboard' >Dashboard</CustomLink></li>
 
-        <li><Link to='/about'>About</Link></li>
-        <li><Link to='/contact'>Contact</Link></li>
+        <li><CustomLink to='/about'>About</CustomLink></li>
+        <li><CustomLink to='/contact'>Contact</CustomLink></li>
         {
-            user?.uid ? <button onClick={handleLogout} className="btn login">Log out</button> : <Link to={'/login'}><button className="btn login">Login</button></Link>
+            user?.uid ? <li><CustomLink to='/login' onClick={handleLogout}>Log Out</CustomLink></li> : <li><CustomLink to='/login'>Login</CustomLink></li>
         }
+
+        {
+            user?.uid ? <li><Link to='' className='text-orange-700'>Welcome  {user.displayName}</Link></li> : <><Link to=''></Link></>
+        }
+        {
+            user?.uid ?
+                <li>
+                    <Link>
+                        <div class="avatar">
+                            <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                <img src={user?.photoURL} />
+                            </div>
+                        </div>
+                    </Link>
+
+                </li>
+
+                : <></>
+        }
+        <Theme></Theme>
         {
             // user?.uid ? <li><Link to='' className='text-orange-700'>Welcome  {user.displayName}</Link></li> : <li><Link to=''></Link></li>
         }
@@ -61,7 +81,7 @@ const Navber = () => {
     </>
     return (
 
-        <div className="navbar bg-base-100">
+        <div className="navbar bg-base-100 justify-between">
             <div className="navbar-start">
                 <div className="dropdown">
                     <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -82,10 +102,14 @@ const Navber = () => {
                     }
                 </ul>
             </div>
-            <div className="navbar-end">
-                <Theme></Theme>
-                {/* <a className="btn">Get started</a> */}
-            </div>
+
+            <label htmlFor="my-drawer-2" tabIndex={2} className="btn btn-ghost lg:hidden">
+                Menu
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+            </label>
+
+
+
         </div>
 
     );

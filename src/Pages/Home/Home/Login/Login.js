@@ -1,13 +1,80 @@
-import React from 'react';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import google from '../../../../assets/google.png';
+import { Authcontext } from '../../../../Context/Authprovider';
+import app from '../../../../Firebase/Firebase.config';
 
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
 
+    const { signInUser, googlesignIN } = useContext(Authcontext)
+
+    const [Loginerror, setLoginerror] = useState('')
+
+    const auth = getAuth(app)
+
+    const location = useLocation()
+
+    const nevigate = useNavigate();
+
+    const from = location.state?.from?.pathname || '/';
+
+
+    const googlesign = () => {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                // The signed-in user info.
+                const user = result.user;
+                toast.success('Doctors portal Login successfully')
+                nevigate(from, { replace: true })
+                console.log(user)
+                // IdP data available using getAdditionalUserInfo(result)
+                // ...
+            })
+            .catch((error) => {
+                console.log(error)
+                toast.error('There is an error.please wait for it')
+                // Handle Errors here.
+                // const errorCode = error.code;
+                // const errorMessage = error.message;
+                // // The email of the user's account used.
+                // const email = error.customData.email;
+                // // The AuthCredential type that was used.
+                // const credential = GoogleAuthProvider.credentialFromError(error);
+                // ...
+            })
+    }
+
     const onSubmit = async data => {
         console.log(data)
+        setLoginerror('')
+        signInUser(data.Email, data.Password)
+            .then(result => {
+                const user = result.user;
+                console.log(user)
+                toast.success('Doctors portal Login successfully')
+                nevigate(from, { replace: true })
+            })
+            .catch(err => {
+                console.log(err.code)
+                if (err.code === 'auth/user-not-found') {
+                    setLoginerror('This email adress is not registered')
+                }
+                else if (err.code === 'auth/wrong-password') {
+                    setLoginerror('Please check your password')
+                }
+                else {
+                    setLoginerror('An unknown error occurred.please try again later')
+                }
+                // setLoginerror(err.message)
+            })
     }
     return (
         <>
@@ -104,6 +171,10 @@ const Login = () => {
                                     data-te-ripple-color="light">
                                     Sign in
                                 </button>
+
+                                {
+                                    Loginerror && <p className='text-red-700'>{Loginerror}</p>
+                                }
                                 {/* {errormessage} */}
 
                                 <div
@@ -115,7 +186,7 @@ const Login = () => {
                                 </div>
 
 
-                                <button className="btn  btn-success w-full"> <img style={{ width: '30px' }} src={google} alt="" />Continue with google</button>
+
 
                                 {/* <a
                                     class="mb-3 flex w-full items-center justify-center rounded bg-primary px-7 pt-3 pb-2.5 text-center text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
@@ -154,6 +225,8 @@ const Login = () => {
                                     Continue with Twitter
                                 </a> */}
                             </form>
+
+                            <button onClick={googlesign} className="btn  btn-success w-full"> <img style={{ width: '30px' }} src={google} alt="" />Continue with google</button>
                         </div>
                     </div>
                 </div>
