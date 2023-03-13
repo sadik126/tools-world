@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useMatch, useResolvedPath } from 'react-router-dom';
 import { Authcontext } from '../../Context/Authprovider';
 import Useadmin from '../../hooks/Useadmin/Useadmin';
 import Footer from '../../Shared/Footer/Footer';
@@ -8,6 +8,25 @@ import Navber from '../../Shared/Navber/Navber';
 const DashboardLayout = () => {
     const { user } = useContext(Authcontext)
     const [isAdmin] = Useadmin(user?.email)
+
+    function CustomLink({ children, to, ...props }) {
+        let resolved = useResolvedPath(to);
+        let match = useMatch({ path: resolved.pathname, end: true });
+
+        return (
+            <div>
+                <Link
+                    // style={{ textDecoration: match ? "underline" : "none" }}
+                    className={match && 'btn btn-secondary'}
+                    to={to}
+                    {...props}
+                >
+                    {children}
+                </Link>
+                {/* {match && " (active)"} */}
+            </div>
+        );
+    }
     return (
         <div>
             <Navber></Navber>
@@ -25,20 +44,20 @@ const DashboardLayout = () => {
                     <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
                     <ul className="menu p-4 w-80 bg-base-100 text-base-content">
 
-                        <li><Link to='/dashboard'>My appointments</Link></li>
-                        <li><Link to='/profile'>Profile</Link></li>
+                        <li><CustomLink to='/dashboard'>My appointments</CustomLink></li>
+                        <li><CustomLink to='/dashboard/profile'>Profile</CustomLink></li>
 
                         {
-                            !isAdmin && <li><Link to='/review'>Add a review</Link></li>
+                            !isAdmin && <li><CustomLink to='/dashboard/reviews'>Add a review</CustomLink></li>
                         }
 
                         {
                             isAdmin &&
                             <>
-                                <li><Link to='/dashboard/users'>Users</Link></li>
-                                <li><Link to='/dashboard/addDoctor'>Add doctor</Link></li>
-                                <li><Link to='/dashboard/manageDoctor'>Manage doctor</Link></li>
-                                <li><Link to='/dashboard/Allbookings'>Manage Appointments</Link></li>
+                                <li><CustomLink to='/dashboard/users'>Handle Users</CustomLink></li>
+                                <li><CustomLink to="/dashboard/manageorders">All orders</CustomLink></li>
+                                <li><CustomLink to='/dashboard/manageproducts'>Manage Products</CustomLink></li>
+                                <li><CustomLink to='/dashboard/addproducts'>Add product</CustomLink></li>
                             </>
                         }
                     </ul>

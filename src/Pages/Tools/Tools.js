@@ -8,7 +8,7 @@ const Tools = () => {
     const { data: tools = [], isError, isLoading, refetch } = useQuery({
         queryKey: ['tools'],
         queryFn: async () => {
-            const res = await fetch('http://localhost:4040/tools')
+            const res = await fetch('https://tools-server-five.vercel.app/tools')
             const data = await res.json()
             return data
         }

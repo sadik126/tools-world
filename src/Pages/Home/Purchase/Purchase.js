@@ -33,7 +33,7 @@ const Purchase = () => {
     const { data: bookings = [], isError, isLoading, refetch } = useQuery({
         queryKey: ['bookings'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:4040/tools/${booking._id}`)
+            const res = await fetch(`https://tools-server-five.vercel.app/tools/${booking._id}`)
             const data = await res.json()
             return data
         }
@@ -59,7 +59,7 @@ const Purchase = () => {
             phone: data.phone,
             amount: data.amount
         }
-        fetch('http://localhost:4040/booking', {
+        fetch('https://tools-server-five.vercel.app/booking', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -91,7 +91,7 @@ const Purchase = () => {
     const updateData = (amount) => {
         const updatedamount = parseInt(booking.available) - parseInt(amount);
         console.log(updatedamount)
-        const url = ` http://localhost:4040/updatedtools/${booking._id}`
+        const url = ` https://tools-server-five.vercel.app/updatedtools/${booking._id}`
         fetch(url, {
             method: 'PUT',
             headers: {

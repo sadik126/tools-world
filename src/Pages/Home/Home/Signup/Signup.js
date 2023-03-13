@@ -94,7 +94,7 @@ const Signup = () => {
     const saveuser = (name, email, image) => {
         const user = { name: name, email: email, image: image }
 
-        fetch('http://localhost:4040/users', {
+        fetch('https://tools-server-five.vercel.app/users', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

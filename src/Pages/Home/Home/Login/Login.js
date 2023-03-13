@@ -55,7 +55,7 @@ const Login = () => {
     const onSubmit = async data => {
         console.log(data)
         setLoginerror('')
-        signInUser(data.Email, data.Password)
+        signInUser(data.email, data.password)
             .then(result => {
                 const user = result.user;
                 console.log(user)
@@ -152,11 +152,11 @@ const Login = () => {
                                         </label>
                                     </div> */}
                                     <p>New to TOOLS WORLD?<Link to="/signup" className='text-green-600' > Create new account</Link></p>
-                                    <a
+                                    {/* <a
                                         href="#!"
                                         class="text-primary transition duration-150 ease-in-out hover:text-primary-600 focus:text-primary-600 active:text-primary-700 dark:text-primary-400 dark:hover:text-primary-500 dark:focus:text-primary-500 dark:active:text-primary-600"
                                     >Forgot password?</a
-                                    >
+                                    > */}
 
 
                                 </div>

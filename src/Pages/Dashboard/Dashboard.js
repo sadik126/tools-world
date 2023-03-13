@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { Authcontext } from '../../Context/Authprovider';
 import Confirmationmodal from '../../Shared/Confirmationmodal/Confirmationmodal';
@@ -13,7 +14,7 @@ const Dashboard = () => {
         setdeletingAppointment(null)
     }
 
-    const url = `http://localhost:4040/booking?email=${user?.email}`
+    const url = `https://tools-server-five.vercel.app/booking?email=${user?.email}`
 
     const { data: bookings = [], isLoading, refetch } = useQuery({
         queryKey: ['bookings', user?.email],
@@ -32,8 +33,19 @@ const Dashboard = () => {
         return <Loading></Loading>
     }
 
-    const deleteBooking = () => {
+    const deleteBooking = (booking) => {
+        fetch(`https://tools-server-five.vercel.app/bookings/${booking._id}`, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if (data.deletedCount > 0) {
+                    toast(`${booking.product} is deleted`)
+                    refetch()
+                }
 
+            })
     }
     return (
         <div>
@@ -72,7 +84,7 @@ const Dashboard = () => {
                                         }
 
                                         {
-                                            booking.price && booking.paid && <span className='text-success'>Paid</span>
+                                            booking.productPrice && booking.paid && <span className='text-success'>Paid</span>
                                         }
 
 
@@ -90,7 +102,7 @@ const Dashboard = () => {
             {
                 deletingAppointment && <Confirmationmodal
                     title={`Are your sure you want to delete?`}
-                    message={`If you delete ${deletingAppointment.patient}. it can not be undone`}
+                    message={`If you delete ${deletingAppointment.product}. it can not be undone`}
                     closeModal={closeModal}
                     modaldata={deletingAppointment}
                     deleteDoctor={deleteBooking}
