@@ -5,7 +5,7 @@ import Loading from '../../Shared/Loading/Loading';
 import Tool from './Tool';
 
 const Tools = () => {
-    const { data: tools = [], isError, isLoading, refetch } = useQuery({
+    const { data: tools = [], isError, isLoading } = useQuery({
         queryKey: ['tools'],
         queryFn: async () => {
             const res = await fetch('https://tools-server-five.vercel.app/tools')

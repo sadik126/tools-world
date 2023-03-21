@@ -84,6 +84,8 @@ const Cardpayment = ({ booking }) => {
             return
         }
 
+        console.log(paymentIntent)
+
         if (paymentIntent.status === 'succeeded') {
 
 
@@ -105,8 +107,9 @@ const Cardpayment = ({ booking }) => {
 
                 .then(res => res.json())
                 .then(data => {
-                    if (data.insertedId) {
-                        console.log(data)
+                    console.log(data)
+                    if (data.acknowledged) {
+
                         setSuccess('Congrates.Your payment is complete')
                         setTransationid(paymentIntent.id)
                         toast.success('your payment is complete')

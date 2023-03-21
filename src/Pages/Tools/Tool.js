@@ -23,7 +23,7 @@ const Tool = (props) => {
                 <div class="card-body items-center text-center">
                     <h2 class="card-title">{name}</h2>
                     {/* class="rounded-xl" */}
-                    <p>{description.substring(0, 50)}...</p>
+                    <p>{description?.substring(0, 50)}...</p>
                     <p>Available : {available}</p>
                     <p>Price : {price}</p>
                     <p>Minimum : {minimum}</p>
