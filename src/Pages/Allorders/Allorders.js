@@ -4,7 +4,7 @@ const Allorders = () => {
     const [orders, setOrders] = useState([])
 
     useEffect(() => {
-        fetch('https://tools-server-five.vercel.app/bookings')
+        fetch('http://localhost:4040/bookings')
             .then(res => res.json())
             .then(data => setOrders(data))
     }, [])
@@ -13,7 +13,7 @@ const Allorders = () => {
     const handledelete = (id) => {
         const proceed = window.confirm('are you sure?')
         if (proceed) {
-            const url = `https://tools-server-five.vercel.app/bookings/${id}`
+            const url = `http://localhost:4040/bookings/${id}`
             fetch(url, {
                 method: 'DELETE'
             })

@@ -20,11 +20,13 @@ import Users from "../../Pages/Users/Users";
 import Adminroute from "../Adminroute/Adminroute";
 
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import Error from "../../Pages/Error/Error";
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Main></Main>,
+        errorElement:<Error></Error>,
         children: [
             {
                 path: '/',
@@ -52,13 +54,13 @@ const router = createBrowserRouter([
             },
             {
                 path: '/purchase/:id',
-                element: <Purchase></Purchase>,
-                loader: ({ params }) => fetch(`https://tools-server-five.vercel.app/tools/${params.id}`)
+                element:  <PrivateRoute><Purchase></Purchase></PrivateRoute> ,
+                loader: ({ params }) => fetch(`http://localhost:4040/tools/${params.id}`)
             },
             {
                 path: '/tools/:id',
                 element: <Toolsdetails></Toolsdetails>,
-                loader: ({ params }) => fetch(`https://tools-server-five.vercel.app/tools/${params.id}`)
+                loader: ({ params }) => fetch(`http://localhost:4040/tools/${params.id}`)
             },
 
         ]
@@ -70,8 +72,8 @@ const router = createBrowserRouter([
         element: <PrivateRoute> <DashboardLayout></DashboardLayout> </PrivateRoute>,
         children: [
             {
-
-                path: '/dashboard',
+                index: true, 
+                // path: '/dashboard',
                 element: <Dashboard></Dashboard>
 
 
@@ -100,28 +102,28 @@ const router = createBrowserRouter([
             {
 
                 path: '/dashboard/manageorders',
-                element: <Adminroute><Allorders></Allorders></Adminroute>
+                element: <Allorders></Allorders>
 
 
             },
             {
 
                 path: '/dashboard/manageproducts',
-                element: <Adminroute><Allproducts></Allproducts></Adminroute>
+                element: <Allproducts></Allproducts>
 
 
             },
             {
 
                 path: '/dashboard/addproducts',
-                element: <Adminroute><Addproduct></Addproduct></Adminroute>
+                element: <Addproduct></Addproduct>
 
 
             },
             {
                 path: '/dashboard/payment/:id',
                 element: <Payment></Payment>,
-                loader: ({ params }) => fetch(`https://tools-server-five.vercel.app/booking/${params.id}`)
+                loader: ({ params }) => fetch(`http://localhost:4040/booking/${params.id}`)
             },
         ]
     }

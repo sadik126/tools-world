@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
@@ -13,17 +13,24 @@ const Purchase = () => {
     const { user } = useContext(Authcontext);
 
 
-    const { register, formState: { errors }, handleSubmit, reset } = useForm({
-        defaultValues: {
-            name: user?.displayName,
-            email: user?.email
-
-        }
+    const { register, formState: { errors }, handleSubmit, reset , setValue } = useForm({
+        
 
     });
 
 
+    useEffect(() => {
+        if (user) {
+            setValue("name", user.displayName);
+            setValue("email", user.email);
+            setValue("phone", "+88"); 
+        }
+    }, [user, setValue]);
+
+
     const booking = useLoaderData();
+
+    console.log(booking)
 
 
 
@@ -33,7 +40,7 @@ const Purchase = () => {
     const { data: bookings = [], isError, isLoading, refetch } = useQuery({
         queryKey: ['bookings'],
         queryFn: async () => {
-            const res = await fetch(`https://tools-server-five.vercel.app/tools/${booking._id}`)
+            const res = await fetch(`http://localhost:4040/tools/${booking._id}`)
             const data = await res.json()
             return data
         }
@@ -51,15 +58,15 @@ const Purchase = () => {
         console.log(data)
         updateData(data.amount)
         const purchaseProduct = {
-            name: data.name,
-            email: data.email,
+            name: data?.name,
+            email: data?.email,
             product: booking?.name,
             productPrice: booking?.price,
             totalprice: parseInt(data.amount) * booking?.price,
             phone: data.phone,
             amount: data.amount
         }
-        fetch('https://tools-server-five.vercel.app/booking', {
+        fetch('http://localhost:4040/booking', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -91,7 +98,7 @@ const Purchase = () => {
     const updateData = (amount) => {
         const updatedamount = parseInt(booking.available) - parseInt(amount);
         console.log(updatedamount)
-        const url = ` https://tools-server-five.vercel.app/updatedtools/${booking._id}`
+        const url = ` http://localhost:4040/updatedtools/${booking._id}`
         fetch(url, {
             method: 'PUT',
             headers: {
@@ -150,7 +157,7 @@ const Purchase = () => {
 
                                     <input {...register("name", {
                                         required: { value: true, message: 'Name is required' }
-                                    })} type="text" value={user?.displayName} disabled={user} placeholder="name" className="input input-bordered" />
+                                    })} type="text" defaultValue={user?.displayName} readOnly placeholder="name" className="input input-bordered" />
 
                                 </div>
 
@@ -161,7 +168,7 @@ const Purchase = () => {
                                     </label>
                                     <input {...register("email", {
                                         required: { value: true, message: 'Email is required' }
-                                    })} type="text" value={user?.email} disabled={user} placeholder="email" className="input input-bordered" />
+                                    })} type="text" defaultValue={user?.email} readOnly placeholder="email" className="input input-bordered" />
                                 </div>
                                 <div className="form-control">
                                     <label className="label">
@@ -175,9 +182,9 @@ const Purchase = () => {
                                         required: { value: true, message: 'Number is required' },
                                         pattern: { value: /^[0-9+-]+$/, message: 'Enter valid phone number' },
                                         minLength: { value: 11, message: 'Your digit is lower than 11' },
-                                        maxLength: { value: 11, message: "Your digit is higher than 11" }
+                                        maxLength: { value: 15, message: "Your digit is higher than 15" }
 
-                                    })} type="text" placeholder="phone" className="input input-bordered" />
+                                    })} type="text" placeholder="phone"   className="input input-bordered" />
 
                                 </div>
 

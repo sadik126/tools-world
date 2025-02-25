@@ -17,7 +17,7 @@ const Cardpayment = ({ booking }) => {
 
     useEffect(() => {
         // Create PaymentIntent as soon as the page loads
-        fetch("https://tools-server-five.vercel.app/create-payment-intent", {
+        fetch("http://localhost:4040/create-payment-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ totalprice }),
@@ -27,6 +27,7 @@ const Cardpayment = ({ booking }) => {
                 if (data?.clientSecret) {
                     setClientSecret(data.clientSecret);
                     setIsLoading(false)
+                    console.log(clientSecret)
                 }
                 // setClientSecret(data.clientSecret)
 
@@ -73,7 +74,14 @@ const Cardpayment = ({ booking }) => {
                     card: card,
                     billing_details: {
                         name: name,
-                        email: email
+                        email: email,
+                        address: {
+                            line1: "123 Test Street",
+                            city: "New Delhi",
+                            state: "Delhi",
+                            postal_code: "110001",
+                            country: "IN" // **India হওয়া লাগবে**
+                        }
                     },
                 },
             },
@@ -93,11 +101,12 @@ const Cardpayment = ({ booking }) => {
                 totalprice,
                 transationId: paymentIntent.id,
                 email,
-                bookingId: _id
+                bookingId: _id,
+                description: "Payment for tools from Tools World"
 
             }
 
-            fetch('https://tools-server-five.vercel.app/payments', {
+            fetch('http://localhost:4040/payments', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'

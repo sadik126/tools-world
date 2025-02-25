@@ -3,6 +3,7 @@ import './App.css';
 import { RouterProvider } from 'react-router-dom';
 import router from './Routes/Routes/Routes';
 import { Toaster } from 'react-hot-toast';
+import Loading from './Shared/Loading/Loading';
 
 
 
@@ -12,7 +13,7 @@ function App() {
 
 
 
-      <RouterProvider router={router}>
+      <RouterProvider router={router} fallbackElement={<Loading></Loading>}>
 
       </RouterProvider>
 

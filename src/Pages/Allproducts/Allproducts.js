@@ -4,15 +4,18 @@ const Allproducts = () => {
     const [tools, setTools] = useState([])
 
     useEffect(() => {
-        fetch('https://tools-server-five.vercel.app/tools')
+        fetch('http://localhost:4040/tools')
             .then(res => res.json())
-            .then(data => setTools(data))
+            .then(data => {
+                console.log(data)
+                setTools(data)
+            })
     }, [])
 
     const handledelete = (id) => {
         const proceed = window.confirm('are you sure?')
         if (proceed) {
-            const url = `https://tools-server-five.vercel.app/tools/${id}`
+            const url = `http://localhost:4040/tools/${id}`
             fetch(url, {
                 method: 'DELETE'
             })

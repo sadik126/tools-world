@@ -23,7 +23,7 @@ const Reviews = () => {
         }
         // console.log(review)
 
-        fetch('https://tools-server-five.vercel.app/review', {
+        fetch('http://localhost:4040/review', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

@@ -6,16 +6,22 @@ import Toolscare from '../Toolscare/Toolscare';
 import Contactus from './Contact/Contactus';
 import Steps from './Steps/Steps';
 import Testimonials from './Testimonials/Testimonials';
+import { Helmet } from 'react-helmet-async';
+import Category from './Category/Category';
 
 const Home = () => {
     return (
         <div>
+            <Helmet>
+        <title>Home - Tools-world</title>
+      </Helmet>
             <Banner></Banner>
             <Business></Business>
+            <Category></Category>
             <Display></Display>
             <Toolscare></Toolscare>
             <Steps></Steps>
-            <Testimonials></Testimonials>
+            {/* <Testimonials></Testimonials> */}
             <Contactus></Contactus>
         </div>
     );

@@ -14,7 +14,7 @@ const Users = () => {
     const { data: users = [], isError, isLoading, refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
-            const res = await fetch(`https://tools-server-five.vercel.app/users`, {
+            const res = await fetch(`http://localhost:4040/users`, {
                 method: 'GET',
                 headers: {
                     authorization: `Bearer ${localStorage.getItem('accesstoken')}`
@@ -30,7 +30,7 @@ const Users = () => {
 
 
     const makeAdmin = (id) => {
-        // fetch(`https://tools-server-five.vercel.app/user/admin/${user.email}`, {
+        // fetch(`http://localhost:4040/user/admin/${user.email}`, {
         //     method: 'PUT',
         //     headers: {
         //         authorization: `Bearer ${localStorage.getItem('accesstoken')}`
@@ -53,7 +53,7 @@ const Users = () => {
         //     })
 
 
-        fetch(`https://tools-server-five.vercel.app/user/admin/${id}`, {
+        fetch(`http://localhost:4040/user/admin/${id}`, {
             method: 'PUT',
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -73,7 +73,7 @@ const Users = () => {
 
 
     const deleteUser = user => {
-        fetch(`https://tools-server-five.vercel.app/user/${user._id}`, {
+        fetch(`http://localhost:4040/user/${user._id}`, {
             method: 'DELETE'
         })
             .then(res => res.json())

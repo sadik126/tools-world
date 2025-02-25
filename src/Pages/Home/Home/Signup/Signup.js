@@ -94,7 +94,7 @@ const Signup = () => {
     const saveuser = (name, email, image) => {
         const user = { name: name, email: email, image: image }
 
-        fetch('https://tools-server-five.vercel.app/users', {
+        fetch('http://localhost:4040/users', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
@@ -104,7 +104,7 @@ const Signup = () => {
             .then(res => res.json())
             .then(result => {
                 console.log(result)
-                toast.success(`${result.displayName} Added successfully`)
+                toast.success(`${name} Added successfully`)
                 nevigate(from, { replace: true })
                 // navigate('/dashboard/manageDoctor')
             })

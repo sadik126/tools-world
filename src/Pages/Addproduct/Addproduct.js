@@ -14,7 +14,7 @@ const Addproduct = () => {
         formdata.append('image', image)
         const url = `https://api.imgbb.com/1/upload?key=${imgstoragekey}`
 
-        fetch(url, {
+      await  fetch(url, {
             method: 'POST',
             body: formdata
         })
@@ -31,7 +31,7 @@ const Addproduct = () => {
                         img: img
                     }
 
-                    fetch('https://tools-server-five.vercel.app/tools', {
+                     fetch('http://localhost:4040/tools', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json'
@@ -40,7 +40,7 @@ const Addproduct = () => {
 
                     })
                         .then(res => res.json())
-                        .then(data => {
+                        .then(data =>  {
                             if (data.success) {
                                 toast.success(`product is added`)
                                 reset();
@@ -57,7 +57,7 @@ const Addproduct = () => {
         // setAmount(data)
         // console.log(data.amount)
         // const totalamount = data.amount;
-        // await fetch('https://tools-server-five.vercel.app/booking', {
+        // await fetch('http://localhost:4040/booking', {
         //     method: 'POST',
         //     headers: {
         //         'content-type': 'application/json'
@@ -84,12 +84,12 @@ const Addproduct = () => {
     };
     return (
         <>
-            <h1 className='text-center text-accent text-4xl'>Add product</h1>
+            <h1 className='text-center text-accent text-4xl mt-12'>Add product</h1>
             <div className='flex justify-center items-center'>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="form-control w-full max-w-xs">
+                <form onSubmit={handleSubmit(onSubmit)} className="form-control w-full sm:max-w-xs mx-auto">
 
-                    <div className="form-control w-full max-w-xs">
+                    <div className="form-control">
                         <label className="label">
                             <span className="label-text">Name</span>
 
@@ -108,7 +108,7 @@ const Addproduct = () => {
                     </div>
 
 
-                    <div className="form-control w-full max-w-xs">
+                    <div className="form-control ">
                         <label className="label">
                             <span className="label-text">Description</span>
 

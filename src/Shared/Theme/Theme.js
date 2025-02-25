@@ -1,10 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { themeChange } from 'theme-change';
 
 const Theme = () => {
     useEffect(() => {
         themeChange(false)
     }, [])
+
+    // const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+    // useEffect(() => {
+    //     if (theme === "dark") {
+    //         document.documentElement.classList.add("dark");
+    //     } else {
+    //         document.documentElement.classList.remove("dark");
+    //     }
+    //     localStorage.setItem("theme", theme);
+    // }, [theme]);
+
+    // const toggleTheme = () => {
+    //     setTheme(theme === "dark" ? "light" : "dark");
+    // };
     return (
         <>
             <label className="swap swap-rotate mr-4">
@@ -19,6 +34,18 @@ const Theme = () => {
                 <svg data-set-theme='cmyk' data-act-className="ACTIVECLASS" className="swap-off fill-current w-10 h-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" /></svg>
 
             </label>
+
+{/* <button onClick={toggleTheme} className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800">
+            {theme === "dark" ? (
+                <svg className="w-8 h-8 text-yellow-500" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8A8.009 8.009 0 0 1 12 20Z"/>
+                </svg>
+            ) : (
+                <svg className="w-8 h-8 text-gray-700" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12 3a1 1 0 0 1 1 1V5a1 1 0 0 1-2 0V4A1 1 0 0 1 12 3ZM4.22 5.22a1 1 0 0 1 1.42 0l.71.71a1 1 0 0 1-1.42 1.42l-.71-.71a1 1 0 0 1 0-1.42ZM3 12a1 1 0 0 1 1-1H5a1 1 0 0 1 0 2H4A1 1 0 0 1 3 12Zm1.22 6.78a1 1 0 0 1 1.42 0l.71.71a1 1 0 0 1-1.42 1.42l-.71-.71a1 1 0 0 1 0-1.42ZM12 19a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V20A1 1 0 0 1 12 19Zm6.78-1.22a1 1 0 0 1 1.42 0l.71.71a1 1 0 0 1-1.42 1.42l-.71-.71a1 1 0 0 1 0-1.42ZM19 12a1 1 0 0 1 1-1h1a1 1 0 0 1 0 2H20A1 1 0 0 1 19 12Zm-1.22-6.78a1 1 0 0 1 1.42 0l.71.71a1 1 0 0 1-1.42 1.42l-.71-.71a1 1 0 0 1 0-1.42ZM12 7a5 5 0 1 1-5 5A5 5 0 0 1 12 7Z"/>
+                </svg>
+            )}
+        </button> */}
 
         </>
     );

@@ -5,12 +5,12 @@ import Loading from '../../Shared/Loading/Loading';
 
 const Profile = () => {
     const { user, loading } = useContext(Authcontext)
-    // const url = `https://tools-server-five.vercel.app/user?email=abdullah@gmail.com`
+    // const url = `http://localhost:4040/user?email=abdullah@gmail.com`
 
     const { data: users = [], isLoading, refetch } = useQuery({
         queryKey: ['users', user?.email],
         queryFn: async () => {
-            const res = await fetch(`https://tools-server-five.vercel.app/user?email=${user?.email}`, {
+            const res = await fetch(`http://localhost:4040/user?email=${user?.email}`, {
                 headers: {
                     auth: `bearer ${localStorage.getItem('accessToken')}`
                 }
@@ -20,7 +20,7 @@ const Profile = () => {
         }
     })
 
-    console.log(users[0])
+    console.log(users)
 
     if (loading || isLoading) {
         return <Loading></Loading>

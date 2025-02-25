@@ -17,7 +17,7 @@ const Testimonials = () => {
     const { data: reviews = [], isError, isLoading, refetch } = useQuery({
         queryKey: ['tools'],
         queryFn: async () => {
-            const res = await fetch('https://tools-server-five.vercel.app/review')
+            const res = await fetch('http://localhost:4040/review')
             const data = await res.json()
             return data
         }

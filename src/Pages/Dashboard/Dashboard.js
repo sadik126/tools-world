@@ -14,7 +14,7 @@ const Dashboard = () => {
         setdeletingAppointment(null)
     }
 
-    const url = `https://tools-server-five.vercel.app/booking?email=${user?.email}`
+    const url = `http://localhost:4040/booking?email=${user?.email}`
 
     const { data: bookings = [], isLoading, refetch } = useQuery({
         queryKey: ['bookings', user?.email],
@@ -34,7 +34,7 @@ const Dashboard = () => {
     }
 
     const deleteBooking = (booking) => {
-        fetch(`https://tools-server-five.vercel.app/bookings/${booking._id}`, {
+        fetch(`http://localhost:4040/bookings/${booking._id}`, {
             method: 'DELETE'
         })
             .then(res => res.json())

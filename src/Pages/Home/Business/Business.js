@@ -8,7 +8,7 @@ const Business = () => {
     const [counterOn, setcounterOn] = useState(false)
     return (
         <>
-            <h2 className='text-3xl text-center uppercase font-mono mt-16 font-bold'>The <span className='text-primary'>Bussiness summary</span> </h2>
+           
 
             <div class="p-20  mb-12 grid items-center justify-around grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 

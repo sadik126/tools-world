@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../../Shared/Loading/Loading';
 
 const Tool = (props) => {
-    const { _id, name, price, minimum, available, description, img } = props.tool
+    const { _id, name, price, minimum, available, description, img, loading } = props.tool
     const nevigate = useNavigate();
 
     const nevigatedetail = (id) => {
@@ -12,13 +13,17 @@ const Tool = (props) => {
     const nevigateperchase = (id) => {
         nevigate(`/purchase/${id}`)
     }
+
+    // if (loading) {
+    //     return <Loading></Loading>
+    // }
     return (
         <>
-            <div class="card w-96 bg-base-100 shadow-xl p-5">
-                <figure class="px-10 pt-10">
-                    <img style={{ height: "170px" }} src={img} height="170" width="384" alt="Shoes" />
+            <div class="card  shadow-xl p-5">
+                <div class="px-10 pt-10">
+                    <img style={{ height: "170px" }} src={img} height="170" width="384" alt="" />
 
-                </figure>
+                </div>
 
                 <div class="card-body items-center text-center">
                     <h2 class="card-title">{name}</h2>
