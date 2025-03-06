@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Useaxiossecure from '../Useaxiossecure/Useaxiossecure';
+import Swal from 'sweetalert2';
 
 const Allorders = () => {
     const [orders, setOrders] = useState([])
@@ -17,21 +18,29 @@ const Allorders = () => {
 
 
     const handledelete = (id) => {
-        const proceed = window.confirm('are you sure?')
-        if (proceed) {
-            const url = `http://localhost:4040/bookings/${id}`
-            fetch(url, {
-                method: 'DELETE'
-            })
 
-                .then(res => res.json())
-                .then(data => {
-                    const remaining = orders.filter(order => order._id !== id)
-                    setOrders(remaining)
-                    console.log(data)
-                })
-
-        }
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axiossecure.delete(`/bookings/${id}`)
+                    .then(() => {
+                        setOrders(prevOrders => prevOrders.filter(order => order._id !== id));
+                    })
+                    .catch(error => console.error("ডিলিট করতে সমস্যা হয়েছে:", error));
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success"
+                });
+            }
+        });
 
     }
     return (

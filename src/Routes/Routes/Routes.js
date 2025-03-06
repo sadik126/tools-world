@@ -21,12 +21,13 @@ import Adminroute from "../Adminroute/Adminroute";
 
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import Error from "../../Pages/Error/Error";
+import Edititems from "../../Pages/EditItems/Edititems";
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Main></Main>,
-        errorElement:<Error></Error>,
+        errorElement: <Error></Error>,
         children: [
             {
                 path: '/',
@@ -54,7 +55,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/purchase/:id',
-                element:  <PrivateRoute><Purchase></Purchase></PrivateRoute> ,
+                element: <PrivateRoute><Purchase></Purchase></PrivateRoute>,
                 loader: ({ params }) => fetch(`http://localhost:4040/tools/${params.id}`)
             },
             {
@@ -72,7 +73,7 @@ const router = createBrowserRouter([
         element: <PrivateRoute> <DashboardLayout></DashboardLayout> </PrivateRoute>,
         children: [
             {
-                index: true, 
+                index: true,
                 // path: '/dashboard',
                 element: <Dashboard></Dashboard>
 
@@ -81,7 +82,7 @@ const router = createBrowserRouter([
             {
 
                 path: '/dashboard/profile',
-                element: <PrivateRoute><Profile></Profile></PrivateRoute> 
+                element: <PrivateRoute><Profile></Profile></PrivateRoute>
 
 
             },
@@ -102,27 +103,32 @@ const router = createBrowserRouter([
             {
 
                 path: '/dashboard/manageorders',
-                element: <Adminroute><Allorders></Allorders></Adminroute> 
+                element: <Adminroute><Allorders></Allorders></Adminroute>
 
 
             },
             {
 
                 path: '/dashboard/manageproducts',
-                element: <Adminroute><Allproducts></Allproducts></Adminroute> 
+                element: <Adminroute><Allproducts></Allproducts></Adminroute>
 
 
             },
             {
+                path: '/dashboard/editproducts/:id',
+                element: <Adminroute><Edititems></Edititems></Adminroute>,
+                loader: ({ params }) => fetch(`http://localhost:4040/tools/${params.id}`)
+            },
+            {
 
                 path: '/dashboard/addproducts',
-                element: <Adminroute><Addproduct></Addproduct></Adminroute> 
+                element: <Adminroute><Addproduct></Addproduct></Adminroute>
 
 
             },
             {
                 path: '/dashboard/payment/:id',
-                element: <PrivateRoute><Payment></Payment></PrivateRoute> ,
+                element: <PrivateRoute><Payment></Payment></PrivateRoute>,
                 loader: ({ params }) => fetch(`http://localhost:4040/booking/${params.id}`)
             },
         ]
