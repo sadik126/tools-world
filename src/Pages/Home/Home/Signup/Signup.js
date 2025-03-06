@@ -7,109 +7,146 @@ import { useUpdateProfile } from 'react-firebase-hooks/auth';
 import app from '../../../../Firebase/Firebase.config';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
+import Axiospublic from '../../../Axiospublic/Axiospublic';
 
 const Signup = () => {
-    const { register, formState: { errors }, handleSubmit, reset } = useForm();
-    const auth = getAuth(app);
+    // const { register, formState: { errors }, handleSubmit, reset } = useForm();
+    const allaxios = Axiospublic()
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isValid },
+        trigger,
+        reset,
+      } = useForm({ mode: "onChange" });
+   
 
-    const { createUser } = useContext(Authcontext)
+    const { createUser ,  updateUser , user } = useContext(Authcontext)
 
-    const [signupError, setsignupError] = useState('')
-
-    const [updateProfile, updating, updateError] = useUpdateProfile(auth);
-
-    const location = useLocation()
+   
 
     const nevigate = useNavigate();
 
-    const from = location.state?.from?.pathname || '/';
+    console.log(user)
+
+    // const from = location.state?.from?.pathname || '/';
 
 
 
     const imagehostkey = 'e0e49e32b3b219f54116af3c0da0de50';
+    const imageurl = `https://api.imgbb.com/1/upload?&key=${imagehostkey}`;
 
     const onSubmit = async data => {
-        const image = data.image[0];
-        const formData = new FormData();
-        formData.append('image', image)
-        const url = `https://api.imgbb.com/1/upload?key=${imagehostkey}`
-        fetch(url, {
-            method: 'POST',
-            body: formData
+        const imagefile = {image: data.image[0]}
+        const res = await allaxios.post (imageurl , imagefile , {
+            headers:{
+                'Content-Type':'multipart/form-data'
+            }
         })
-            .then(res => res.json())
-            .then(async imgData => {
-                console.log(imgData)
-                if (imgData.success) {
-                    console.log(imgData.data.url)
 
-                    await createUser(data.email, data.password)
-                        .then(async result => {
-                            const user = result.user;
-                            console.log(user)
-                            saveuser(data.Name, data.Email, data.Password)
+        if (res.data.success){
+            const image = res.data.data.display_url
+           await createUser(data.email , data.password)
+            .then(async(res)=> {
+                const useritem = {
+                    name: data.name,
+                    email: data.email,
+                    image: image
+                  }
 
+                 await updateUser(data.name , image)
+                  .then(async(res)=> {
+                   await allaxios.post('/users' , useritem)
+                  .then(async(res)=> {
+                  if(res.data.insertedId){
+                    reset()
+                   await Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "User created successfully",
+                        showConfirmButton: false,
+                        timer: 1500,
+                      });
+                     await nevigate("/");
+                  }
+                  })
+                  })
+                  .catch((error)=>console.log(error))
 
-                            // toast('User created successfully')
-                            // const userInfo = {
-                            //     displayName: data.Name
-                            // }
+                
+            })
 
-                        })
-                        .catch(err => {
-                            console.log(err)
-                            setsignupError(err.message)
-                        })
+            .catch((error)=>{
+                if (error.code === "auth/email-already-in-use") {
+                    Swal.fire({
+                      icon: "error",
+                      title: "User Already Exists",
+                      text: "This email is already registered. Please log in.",
+                      confirmButtonText: "OK",
+                    });
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: `Something went wrong: ${error.message}`,
+                    });
+                  }
+                // Swal.fire({
+                //     position: "center",
+                //     icon: "error",
+                //     title: `Error: ${error.message}`,
+                //     showConfirmButton: false,
+                //     timer: 1500,
+                //   });
+            })
 
-                    await updateProfile({ displayName: data.name, photoURL: imgData.data.url })
-
-                    // Swal({
-                    //     title: "success",
-                    //     text: "Now you can login our website",
-                    //     icon: "success",
-                    // })
-                    // const user = {
-                    //     name: data.name,
-                    //     email: data.email,
-
-                    //     image: imgData.data.url
-                    // }
-
-
-
-                    saveuser(data.name, data.email, imgData.data.url)
-
-
+            .catch((error) => {
+                if (error.code === "auth/email-already-in-use") {
+                  Swal.fire({
+                    icon: "error",
+                    title: "User Already Exists",
+                    text: "This email is already registered. Please log in.",
+                    confirmButtonText: "OK",
+                  });
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: `Something went wrong: ${error.message}`,
+                  });
                 }
+              });
 
 
-            })
 
-        console.log(data)
-        reset();
+
+
+
+        }
+     
     }
 
 
 
-    const saveuser = (name, email, image) => {
-        const user = { name: name, email: email, image: image }
+    // const saveuser = (name, email, image) => {
+    //     const user = { name: name, email: email, image: image }
 
-        fetch('http://localhost:4040/users', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(user)
-        })
-            .then(res => res.json())
-            .then(result => {
-                console.log(result)
-                toast.success(`${name} Added successfully`)
-                nevigate(from, { replace: true })
-                // navigate('/dashboard/manageDoctor')
-            })
+    //     fetch('http://localhost:4040/users', {
+    //         method: 'POST',
+    //         headers: {
+    //             'content-type': 'application/json'
+    //         },
+    //         body: JSON.stringify(user)
+    //     })
+    //         .then(res => res.json())
+    //         .then(result => {
+    //             console.log(result)
+    //             toast.success(`${name} Added successfully`)
+    //             nevigate(from, { replace: true })
+    //             // navigate('/dashboard/manageDoctor')
+    //         })
 
-    }
+    // }
     return (
         <>
             <section class="h-screen my-24">
@@ -129,10 +166,12 @@ const Signup = () => {
                                     <input
                                         {...register("name", {
                                             required: { value: true, message: 'Name is required' },
-                                            pattern: { value: /^[a-zA-Z-/.\' ']{3,20}$/, message: 'Dont use any number in your name' }
+                                            pattern: { value: /^[a-zA-Z-/.\' ']{3,20}$/, message: 'Please enter valid name according to your NID' }
                                         })}
                                         type="text"
-                                        class="input input-bordered w-full "
+                                      
+                                        className={`input input-bordered w-full ${errors.name ? "input-error" : ""}`}
+                                        onKeyUp={() => trigger("name")}
                                         id="exampleFormControlInput3"
                                         placeholder="Name" />
                                     <label
@@ -156,7 +195,8 @@ const Signup = () => {
                                             pattern: { value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/, message: 'Insert a valid email' }
                                         })}
                                         type="text"
-                                        class="input input-bordered w-full "
+                                        className={`input input-bordered w-full ${errors.email ? "input-error" : ""}`}
+                                        onKeyUp={() => trigger("email")}
                                         id="exampleFormControlInput3"
                                         placeholder="Email address" />
                                     <label
@@ -179,7 +219,8 @@ const Signup = () => {
                                         minLength: { value: 6, message: 'must be 6 charecter of password' }
                                     })}
                                         type="password"
-                                        class="input input-bordered w-full "
+                                        className={`input input-bordered w-full ${errors.password ? "input-error" : ""}`}
+                                        onKeyUp={() => trigger("password")}
                                         id="exampleFormControlInput33"
                                         placeholder="Password" />
                                     <label
@@ -205,39 +246,19 @@ const Signup = () => {
                                         id="exampleFormControlInput33"
                                         placeholder="Image"
                                         accept="image/*" />
-                                    {/* <label
-                                        for="exampleFormControlInput33"
-                                        class="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[1.15rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-neutral-200"
-                                    >
-                                    </label> */}
+                                   
                                     <label className="label">
                                         {errors.image?.type === 'required' && <span className=" text-red-600 font-bold">{errors?.image?.message}</span>}
-                                        {/* {errors.password?.type === 'minLength' && <span className=" text-red-600 font-bold">{errors?.password?.message}</span>} */}
+                                  
 
 
                                     </label>
                                 </div>
 
                                 <div class="mb-6 flex items-center justify-between">
-                                    {/* <div class="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
-                                        <input
-                                            class="relative float-left mt-[0.15rem] mr-[6px] -ml-[1.5rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-[rgba(0,0,0,0.25)] bg-white before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:ml-[0.25rem] checked:after:-mt-px checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-t-0 checked:after:border-l-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:bg-white focus:after:content-[''] checked:focus:border-primary checked:focus:bg-primary checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:ml-[0.25rem] checked:focus:after:-mt-px checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-t-0 checked:focus:after:border-l-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent"
-                                            type="checkbox"
-                                            value=""
-                                            id="exampleCheck3"
-                                            checked />
-                                        <label
-                                            class="inline-block pl-[0.15rem] hover:cursor-pointer"
-                                            for="exampleCheck3">
-                                            Remember me
-                                        </label>
-                                    </div> */}
+                                  
                                     <p>Already have an account in TOOLS WORLD?<Link to="/login" className='text-secondary' > Login here</Link></p>
-                                    {/* <a
-                                        href="#!"
-                                        class="text-primary transition duration-150 ease-in-out hover:text-primary-600 focus:text-primary-600 active:text-primary-700 dark:text-primary-400 dark:hover:text-primary-500 dark:focus:text-primary-500 dark:active:text-primary-600"
-                                    >Forgot password?</a
-                                    > */}
+                                
 
 
                                 </div>
@@ -245,65 +266,17 @@ const Signup = () => {
 
 
 
-                                <button
-                                    type="submit"
-                                    class="inline-block w-full rounded bg-accent px-7 pt-3 pb-2.5 text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#ca763b] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-accent-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-accent-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-                                    data-te-ripple-init
-                                    data-te-ripple-color="light">
-                                    Sign up
-                                </button>
-                                {/* {errormessage} */}
-
-                                {/* <div
-                                    class="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
-                                    <p
-                                        class="mx-4 mb-0 text-center font-semibold dark:text-neutral-200">
-                                        OR
-                                    </p>
-                                </div> */}
-
-
-                                {/* <button className="btn  btn-success w-full"> <img style={{ width: '30px' }} src={google} alt="" />Continue with google</button> */}
-
-                                {/* <a
-                                    class="mb-3 flex w-full items-center justify-center rounded bg-primary px-7 pt-3 pb-2.5 text-center text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-                                    style={{ backgroundColor: "#3b5998" }}
-                                    href="#!"
-                                    role="button"
-                                    data-te-ripple-init
-                                    data-te-ripple-color="light">
-
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="mr-2 h-3.5 w-3.5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path
-                                            d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-                                    </svg>
-                                    Continue with Facebook
-                                </a> */}
-                                {/* <a
-                                    class="mb-3 flex w-full items-center justify-center rounded bg-info px-7 pt-3 pb-2.5 text-center text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#54b4d3] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)] focus:bg-info-600 focus:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)] focus:outline-none focus:ring-0 active:bg-info-700 active:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)]"
-                                    style={{ backgroundColor: "#55acee" }}
-                                    href="#!"
-                                    role="button"
-                                    data-te-ripple-init
-                                    data-te-ripple-color="light">
-
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="mr-2 h-3.5 w-3.5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path
-                                            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                                    </svg>
-                                    Continue with Twitter
-                                </a> */}
+                                <input
+                className="btn bg-orange-500"
+                type="submit"
+                value="Sign up"
+                disabled={!isValid}
+              />
+                     
+                               
                             </form>
                             {
-                                signupError && <p className='text-red-600'>{signupError}</p>
+                                // signupError && <p className='text-red-600'>{signupError}</p>
                             }
                         </div>
                     </div>

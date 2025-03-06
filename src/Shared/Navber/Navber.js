@@ -3,12 +3,23 @@ import { Link, useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
 import Theme from '../Theme/Theme';
 import logo from '../../../src/assets/tools_logo.png';
 import { Authcontext } from '../../Context/Authprovider';
+import { useQuery } from '@tanstack/react-query';
+import Axiospublic from '../../Pages/Axiospublic/Axiospublic';
 
 
 const Navber = () => {
     const { user, Logout } = useContext(Authcontext)
 
     const nevigate = useNavigate();
+    const axiospublic = Axiospublic();
+
+    const { data: users = [], isLoading, refetch } = useQuery({
+        queryKey: ['users', user?.email],
+        queryFn: async () => {
+            const res = await axiospublic.get(`/user?email=${user?.email}`);
+            return res.data;
+        }
+    });
 
     const handleLogout = () => {
         Logout()
@@ -58,7 +69,7 @@ const Navber = () => {
                     <Link>
                         <div class="avatar">
                             <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                                <img src={user?.photoURL} />
+                                <img src={users[0]?.image} />
                             </div>
                         </div>
                     </Link>

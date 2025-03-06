@@ -45,7 +45,7 @@ const DashboardLayout = () => {
                     <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
                     <ul className="menu p-4 w-80 bg-base-100 text-base-content">
 
-                        <li><CustomLink to='/dashboard'>My appointments</CustomLink></li>
+                        <li><CustomLink to='/dashboard'>My Tools booking</CustomLink></li>
                         <li><CustomLink to='/dashboard/profile'>Profile</CustomLink></li>
 
                         {

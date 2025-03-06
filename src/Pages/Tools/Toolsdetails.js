@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
 const Toolsdetails = () => {
@@ -10,36 +11,63 @@ const Toolsdetails = () => {
 
 
     const changeImage = (image) => {
-        console.log(image)
-        const fullimage = document.getElementById('fullimage')
-        // fullimage.src = image.src;
+        document.getElementById('fullImage').setAttribute('src', image);
+    };
 
-        fullimage.setAttribute('src', image)
+    // const changeImage = (image) => {
+    //     console.log(image)
+    //     const fullimage = document.getElementById('fullimage')
+    //     // fullimage.src = image.src;
+
+    //     fullimage.setAttribute('src', image)
 
 
-    }
+    // }
     return (
         <>
-            <div class="hero min-h-screen bg-base-200">
-                <div class="hero-content flex-col lg:flex-row">
-                    <img id='fullimage' style={{ height: '270px', width: '270px' }} src={products.img} class="max-w-sm rounded-lg shadow-2xl" />
-                    <div className='w-3/4 flex lg:flex-col sm:flex-row' >
-                        <img src={products.img} class="w-1/4 my-4 opacity-50 hover:opacity-100 cursor-pointer" onClick={() => changeImage(products.img)} />
-                        <img src={products.img1} class="w-1/4 my-4 opacity-50 hover:opacity-100 cursor-pointer" onClick={() => changeImage(products.img1)} />
-                        <img src={products.img2} class="w-1/4 my-4 opacity-50 hover:opacity-100 cursor-pointer" onClick={() => changeImage(products.img2)} />
-                    </div>
-                    <div>
-                        <h1 class="text-5xl font-bold">{products.name}</h1>
-                        <p class="py-6">{products.description}</p>
-                        <p class="py-6 text-red-600 text-2xl">Price:{products.price} USD</p>
-                        <p class="py-6 text-xl">Available products: {products.available}</p>
-                        <p class="py-6 text-xl">Minimum products: {products.minimum}</p>
-                        <button onClick={() => nevigateperchase(products._id)} class="btn btn-primary">Buy now</button>
+        <Helmet>
+                <title>Details</title>
+              </Helmet>
+         <div className="min-h-screen flex items-center justify-center  p-6">
+            <div className="w-full max-w-6xl flex flex-col md:flex-row bg-gray-950 bg-opacity-80 rounded-2xl shadow-2xl p-6 backdrop-blur-md">
+                {/* Product Images */}
+                <div className="flex flex-col items-center md:w-1/2">
+                    <img 
+                        id="fullImage" 
+                        className="w-80 h-80 object-cover rounded-xl shadow-lg border border-gray-700" 
+                        src={products.images ? products.images[0] : products.img} 
+                        alt={products.name} 
+                    />
+                    <div className="flex gap-2 mt-4">
+                        {products.images?.map((img, index) => (
+                            <img 
+                                key={index} 
+                                src={img} 
+                                alt={`Thumbnail ${index + 1}`} 
+                                className="w-16 h-16 object-cover rounded-lg cursor-pointer hover:opacity-80 border border-gray-700"
+                                onClick={() => changeImage(img)}
+                            />
+                        ))}
                     </div>
                 </div>
+                
+                {/* Product Info */}
+                <div className="md:w-1/2 flex flex-col justify-center p-6">
+                    <h1 className="text-4xl font-bold ">{products.name}</h1>
+                    <p className=" mt-3">{products.description}</p>
+                    <p className="text-red-400 text-2xl font-semibold mt-3">Price: ${products.price}</p>
+                    <p className=" mt-2">Available: {products.available} units</p>
+                    <p className=" mt-1">Minimum Order: {products.minimum} units</p>
+                    <button 
+                        onClick={() => nevigateperchase(products._id)}
+                        className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-400 text-white font-semibold rounded-lg shadow-md transition"
+                    >
+                        Buy Now
+                    </button>
+                </div>
             </div>
-
-        </>
+        </div>
+    </>
     );
 };
 

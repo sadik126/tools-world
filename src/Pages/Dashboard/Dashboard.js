@@ -21,12 +21,13 @@ const Dashboard = () => {
         queryFn: async () => {
             const res = await fetch(url, {
                 headers: {
-                    auth: `bearer ${localStorage.getItem('accessToken')}`
+                    authorization: `bearer ${localStorage.getItem('accessToken')}`
                 }
             });
             const data = await res.json()
             return data;
-        }
+        },
+        enabled: !!user?.email
     })
 
     if (loading || isLoading) {
@@ -43,15 +44,19 @@ const Dashboard = () => {
                 if (data.deletedCount > 0) {
                     toast(`${booking.product} is deleted`)
                     refetch()
+                    setdeletingAppointment(null);
                 }
 
             })
+            .catch(error => {
+                toast.error("Failed to delete booking!");
+            });
     }
     return (
         <div>
-            <div className="overflow-x-auto">
+            {/* <div className="overflow-x-auto">
                 <table className="table w-full">
-                    {/* head */}
+                 
                     <thead>
                         <tr>
                             <th></th>
@@ -66,7 +71,7 @@ const Dashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* row 1 */}
+                       
                         {
                             bookings.map((booking, i) =>
 
@@ -94,7 +99,7 @@ const Dashboard = () => {
                                 </tr>
                             )
                         }
-                        {/* row 2 */}
+                     
 
                     </tbody>
                 </table>
@@ -108,7 +113,68 @@ const Dashboard = () => {
                     deleteDoctor={deleteBooking}
 
                 ></Confirmationmodal>
-            }
+            } */}
+            <div className="p-5">
+                <h2 className="text-xl font-semibold  mb-4">Your Bookings</h2>
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border-none  rounded-lg shadow-md">
+                        <thead className=" ">
+                            <tr className="text-left">
+                                <th className="p-3">#</th>
+                                <th className="p-3">Name</th>
+                                <th className="p-3">Email</th>
+                                <th className="p-3">Product</th>
+                                <th className="p-3">Phone</th>
+                                <th className="p-3">Price</th>
+                                <th className="p-3">Total</th>
+                                <th className="p-3">Payment</th>
+                                <th className="p-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {bookings.map((booking, i) => (
+                                <tr key={booking._id} className="border-none hover:bg-blue-600 hover:text-white transition-all">
+                                    <td className="p-3">{i + 1}</td>
+                                    <td className="p-3">{booking.name}</td>
+                                    <td className="p-3">{booking.email}</td>
+                                    <td className="p-3">{booking.product}</td>
+                                    <td className="p-3">{booking.phone}</td>
+                                    <td className="p-3">${booking.productPrice}</td>
+                                    <td className="p-3">${booking.totalprice}</td>
+                                    <td className="p-3">
+                                        {!booking.paid ? (
+                                            <Link to={`/dashboard/payment/${booking._id}`}>
+                                                <button className="bg-green-500  px-3 py-1 rounded-lg text-xs hover:bg-green-600 transition">
+                                                    Pay Now
+                                                </button>
+                                            </Link>
+                                        ) : (
+                                            <span className="text-green-500 font-semibold">Paid</span>
+                                        )}
+                                    </td>
+                                    <td className="p-3">
+                                        <button
+                                            onClick={() => setdeletingAppointment(booking)}
+                                            className="bg-red-500  px-3 py-1 rounded-lg text-xs hover:bg-red-600 transition"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                {deletingAppointment && (
+                    <Confirmationmodal
+                        title="Are you sure?"
+                        message={`If you delete ${deletingAppointment.product}, it cannot be undone.`}
+                        closeModal={closeModal}
+                        modaldata={deletingAppointment}
+                        deleteDoctor={deleteBooking}
+                    />
+                )}
+            </div>
         </div>
     );
 };

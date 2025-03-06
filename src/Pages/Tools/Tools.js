@@ -4,6 +4,8 @@ import Swal from 'sweetalert2';
 import Loading from '../../Shared/Loading/Loading';
 import Tool from './Tool';
 import Axiospublic from '../Axiospublic/Axiospublic';
+import { Helmet } from 'react-helmet-async';
+import Useaxiossecure from '../Useaxiossecure/Useaxiossecure';
 
 const Tools = () => {
 
@@ -15,6 +17,7 @@ const Tools = () => {
         queryKey: ['tools'],
         queryFn: async () => {
             const axiospublic = Axiospublic();
+           
             // const res = await fetch('http://localhost:4040/tools')
             // const data = await res.json()
             // return data
@@ -42,6 +45,7 @@ const Tools = () => {
 
     const filteredTools = tools.filter((tool) => {
         const matchesSearch = tool.name.toLowerCase().includes(search.toLowerCase());
+        // এখানে Tool name  মিলাবে ডাটাবেজ থেকে আগে ছোট হাতের অক্ষর এ নিয়ে চেক করবে includes দিয়ে , এখানে includes return করে true নাকি false , এটা চেক করবে  (এর মধ্যে search অপশন এ যা লিখবে সেটা কে lower case এ আইনা)
         const matchesCategory = category === "all" || tool.category === category;
         const matchesPrice =
           priceRange === "all" ||
@@ -55,6 +59,9 @@ const Tools = () => {
       });
     return (
         <div>
+          <Helmet>
+                  <title>Tools</title>
+                </Helmet>
       <div className="container mx-auto md:min-h-screen">
         <h2 className="text-3xl text-center uppercase font-mono mt-9 font-bold">
           Our <span className="text-primary">products</span>
@@ -67,12 +74,14 @@ const Tools = () => {
             placeholder="Search by name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            // এখানে state এ value update হবে
             className="input input-bordered w-64"
           />
 
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
+            // এখানে state এ value update হবে
             className="select select-bordered w-48"
           >
             <option value="all">All Categories</option>
@@ -84,6 +93,7 @@ const Tools = () => {
           <select
             value={priceRange}
             onChange={(e) => setPriceRange(e.target.value)}
+            // এখানে state এ value update হবে
             className="select select-bordered w-48"
           >
             <option value="all">All Prices</option>

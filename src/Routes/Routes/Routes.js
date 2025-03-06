@@ -81,7 +81,7 @@ const router = createBrowserRouter([
             {
 
                 path: '/dashboard/profile',
-                element: <Profile></Profile>
+                element: <PrivateRoute><Profile></Profile></PrivateRoute> 
 
 
             },
@@ -102,27 +102,27 @@ const router = createBrowserRouter([
             {
 
                 path: '/dashboard/manageorders',
-                element: <Allorders></Allorders>
+                element: <Adminroute><Allorders></Allorders></Adminroute> 
 
 
             },
             {
 
                 path: '/dashboard/manageproducts',
-                element: <Allproducts></Allproducts>
+                element: <Adminroute><Allproducts></Allproducts></Adminroute> 
 
 
             },
             {
 
                 path: '/dashboard/addproducts',
-                element: <Addproduct></Addproduct>
+                element: <Adminroute><Addproduct></Addproduct></Adminroute> 
 
 
             },
             {
                 path: '/dashboard/payment/:id',
-                element: <Payment></Payment>,
+                element: <PrivateRoute><Payment></Payment></PrivateRoute> ,
                 loader: ({ params }) => fetch(`http://localhost:4040/booking/${params.id}`)
             },
         ]
