@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { FaPencilAlt, FaTrash } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const Allproducts = () => {
@@ -13,9 +15,7 @@ const Allproducts = () => {
             })
     }, [])
 
-    const handleEdit = (id) => {
-        console.log(id)
-    }
+
 
     const handledelete = (id) => {
         Swal.fire({
@@ -46,37 +46,44 @@ const Allproducts = () => {
 
     }
     return (
-        <div class="overflow-x-auto">
-            <table class="table w-full">
-
+        <div className="overflow-x-auto">
+            <table className="table w-full border-none  rounded-lg shadow-md">
                 <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Available</th>
-                        <th>minimum</th>
-                        <th>Edit product</th>
-                        <th>Delete product</th>
+                    <tr className=" text-lg">
+                        <th className="p-3">#</th>
+                        <th className="p-3">Name</th>
+                        <th className="p-3">Price</th>
+                        <th className="p-3">Available</th>
+                        <th className="p-3">Minimum</th>
+                        <th className="p-3">Edit</th>
+                        <th className="p-3">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
-
-                    {
-                        tools.map((tool, index) => <tr key={tool._id}>
-                            <th>{index + 1}</th>
-                            <td>{tool.name}</td>
-                            <td>{tool.price}</td>
-                            <td>{tool.available}</td>
-                            <td>{tool.minimum}</td>
-                            <td><button onClick={() => handleEdit(tool._id)} class="btn btn-xs btn-primary">Edit</button></td>
-                            <td><button onClick={() => handledelete(tool._id)} class="btn btn-xs btn-error">Delete</button></td>
-                        </tr>)
-                    }
-
-
-
-
+                    {tools.map((tool, index) => (
+                        <tr key={tool._id} className="hover:bg-gray-50 border-none">
+                            <th className="p-3">{index + 1}</th>
+                            <td className="p-3 font-medium">{tool.name}</td>
+                            <td className="p-3">${tool.price}</td>
+                            <td className="p-3">{tool.available}</td>
+                            <td className="p-3">{tool.minimum}</td>
+                            <td className="p-3">
+                                <Link to={`/dashboard/editproducts/${tool._id}`}>
+                                    <button className="btn btn-sm btn-primary flex items-center gap-1">
+                                        <FaPencilAlt size={16} /> Edit
+                                    </button>
+                                </Link>
+                            </td>
+                            <td className="p-3">
+                                <button
+                                    onClick={() => handledelete(tool._id)}
+                                    className="btn btn-sm btn-error flex items-center gap-1"
+                                >
+                                    <FaTrash size={16} /> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
