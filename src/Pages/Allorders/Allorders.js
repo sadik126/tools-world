@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import Useaxiossecure from '../Useaxiossecure/Useaxiossecure';
 
 const Allorders = () => {
     const [orders, setOrders] = useState([])
 
+    const axiossecure = Useaxiossecure()
     useEffect(() => {
-        fetch('http://localhost:4040/bookings')
-            .then(res => res.json())
-            .then(data => setOrders(data))
-    }, [])
+        axiossecure.get("/bookings")  // "/bookings" এর আগে baseURL অটোমেটিক যোগ হবে
+            .then(response => {
+                setOrders(response.data);
+            })
+            .catch(error => {
+                console.error("ডাটা আনতে সমস্যা হয়েছে:", error);
+            });
+    }, [axiossecure]);
 
 
     const handledelete = (id) => {
@@ -48,7 +54,7 @@ const Allorders = () => {
                 <tbody>
 
                     {
-                        orders.map((order, index) => <tr>
+                        orders.map((order, index) => <tr key={order._id}>
                             <th>{index + 1}</th>
                             <td>{order.name}</td>
                             <td>{order.product}</td>

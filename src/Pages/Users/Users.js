@@ -10,20 +10,15 @@ import Swal from 'sweetalert2';
 
 
 const Users = () => {
-   
-    // const [deletingUser, setdeletingUser] = useState(null)
-    
 
-    // const closeModal = () => {
-    //     setdeletingUser(null)
-    // }
+
     const [searchTerm, setSearchTerm] = useState("");
 
     const axiossecure = Useaxiossecure()
     const { data: users = [], isError, isLoading, refetch } = useQuery({
         queryKey: ['users'],
-        queryFn: async()=>{
-            const res = await axiossecure.get('/users' );
+        queryFn: async () => {
+            const res = await axiossecure.get('/users');
             return res.data;
         }
     })
@@ -37,21 +32,21 @@ const Users = () => {
     }
 
 
-    const makeAdmin = async(id) => {
+    const makeAdmin = async (id) => {
 
-      
-        await axiossecure.patch(`/user/admin/${id}`,{
+
+        await axiossecure.patch(`/user/admin/${id}`, {
 
         })
             .then(res => {
                 console.log(res.data)
                 refetch()
-                if(res.data.modifiedCount > 0){
+                if (res.data.modifiedCount > 0) {
                     refetch()
                     Swal.fire({
-                      title: "Thanks for updating!",
-                      text: `the user  has been promoted to Admin`,
-                      icon: "success"
+                        title: "Thanks for updating!",
+                        text: `the user  has been promoted to Admin`,
+                        icon: "success"
                     });
                 }
             })
@@ -71,7 +66,7 @@ const Users = () => {
         //         }
 
         //     })
-     await   Swal.fire({
+        await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this in tools world!",
             icon: "warning",
@@ -79,34 +74,34 @@ const Users = () => {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!"
-          }).then(async(result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-             await axiossecure.delete(`/user/${id}`)
-                .then (async(res) => {
-                  if (res.data.deletedCount > 0) {
-                  await  refetch()
-                   await Swal.fire({
-                      title: "Deleted!",
-                      text: "Your file has been deleted.",
-                      icon: "success"
-                    });
-                  }
-                })
-      
+                await axiossecure.delete(`/user/${id}`)
+                    .then(async (res) => {
+                        if (res.data.deletedCount > 0) {
+                            await refetch()
+                            await Swal.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success"
+                            });
+                        }
+                    })
+
             }
-          });
+        });
     }
     return (
         <div className="overflow-x-auto">
 
-            <div className='flex justify-center my-20'><input 
-    type="text" 
-    placeholder="Search Users..." 
-    className="border border-gray-300 rounded p-2 w-1/3"
-    onChange={(e) => setSearchTerm(e.target.value)}
-/></div>
-            
-            
+            <div className='flex justify-center my-20'><input
+                type="text"
+                placeholder="Search Users..."
+                className="border border-gray-300 rounded p-2 w-1/3"
+                onChange={(e) => setSearchTerm(e.target.value)}
+            /></div>
+
+
             <table className="table table-zebra w-full">
 
 
@@ -122,7 +117,7 @@ const Users = () => {
                 <tbody>
 
                     {
-                       filteredUsers.map((user, i) => <tr key={user._id} className='hover'>
+                        filteredUsers.map((user, i) => <tr key={user._id} className='hover'>
                             <th>{i + 1}</th>
                             <td>{user.name}</td>
                             <td>{user.email}</td>
@@ -134,7 +129,7 @@ const Users = () => {
                         </tr>)
                     }
 
-               
+
 
 
 

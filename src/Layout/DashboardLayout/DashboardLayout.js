@@ -6,9 +6,11 @@ import Footer from '../../Shared/Footer/Footer';
 import Navber from '../../Shared/Navber/Navber';
 
 const DashboardLayout = () => {
-    const { user } = useContext(Authcontext)
-    // const [isAdmin] = Useadmin(user?.email)
-    const isAdmin = true;
+    // const { user } = useContext(Authcontext)
+    const [isAdmin] = Useadmin()
+
+    console.log(isAdmin)
+    // const isAdmin = true;
 
     function CustomLink({ children, to, ...props }) {
         let resolved = useResolvedPath(to);

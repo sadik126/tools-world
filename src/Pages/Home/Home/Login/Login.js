@@ -12,11 +12,13 @@ const Login = () => {
 
     const { signInUser, googlesignIN } = useContext(Authcontext)
 
+    const [loading, setLoading] = useState(false);
+
     // const [disabled , setDisabled] = useState(true)
 
     const [Loginerror, setLoginerror] = useState('')
 
-    const auth = getAuth(app)
+
 
     const location = useLocation()
 
@@ -25,29 +27,41 @@ const Login = () => {
     const from = location.state?.from?.pathname || '/';
 
 
+    // const googlesign = () => {
+    //     const provider = new GoogleAuthProvider();
+    //     signInWithPopup(auth, provider)
+    //         .then((result) => {
+    //             // This gives you a Google Access Token. You can use it to access the Google API.
+    //             const credential = GoogleAuthProvider.credentialFromResult(result);
+    //             const token = credential.accessToken;
+    //             // The signed-in user info.
+    //             const user = result.user;
+    //             if (user) {
+    //                 toast.success('welcome to tools world')
+    //                 nevigate(from, { replace: true })
+    //             }
+
+    //             console.log(user)
+
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //             toast.error('There is an error.please wait for it')
+
+    //         })
+    // }
+
     const googlesign = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
+        googlesignIN()
             .then((result) => {
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential.accessToken;
-                // The signed-in user info.
-                const user = result.user;
-                if (user) {
-                    toast.success('welcome to tools world')
-                    nevigate(from, { replace: true })
-                }
-
-                console.log(user)
-
+                toast.success('Welcome to Tools World');
+                nevigate(from, { replace: true });
             })
             .catch((error) => {
-                console.log(error)
-                toast.error('There is an error.please wait for it')
-
-            })
-    }
+                console.error(error);
+                toast.error('There was an error. Please try again.');
+            });
+    };
 
     const onSubmit = async data => {
         console.log(data)
@@ -60,18 +74,20 @@ const Login = () => {
                 nevigate(from, { replace: true })
             })
             .catch(err => {
-                console.log(err.code)
-                if (err.code === 'auth/user-not-found') {
-                    setLoginerror('This email adress is not registered')
+                switch (err.code) {
+                    case 'auth/user-not-found':
+                        setLoginerror('This email address is not registered');
+                        break;
+                    case 'auth/wrong-password':
+                        setLoginerror('Incorrect password. Try again.');
+                        break;
+                    case 'auth/too-many-requests':
+                        setLoginerror('Too many failed attempts. Try again later.');
+                        break;
+                    default:
+                        setLoginerror('An unknown error occurred. Please try again later.');
                 }
-                else if (err.code === 'auth/wrong-password') {
-                    setLoginerror('Please check your password')
-                }
-                else {
-                    setLoginerror('An unknown error occurred.please try again later')
-                }
-                // setLoginerror(err.message)
-            })
+            });
     }
     return (
         <>
@@ -144,12 +160,8 @@ const Login = () => {
 
 
 
-                                <button
-                                    type="submit"
-                                    class="inline-block w-full rounded bg-primary px-7 pt-3 pb-2.5 text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-                                    data-te-ripple-init
-                                    data-te-ripple-color="light">
-                                    Sign in
+                                <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+                                    {loading ? 'Signing in...' : 'Sign in'}
                                 </button>
 
                                 {
@@ -165,48 +177,12 @@ const Login = () => {
                                     </p>
                                 </div>
 
-
-
-
-                                {/* <a
-                                    class="mb-3 flex w-full items-center justify-center rounded bg-primary px-7 pt-3 pb-2.5 text-center text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-                                    style={{ backgroundColor: "#3b5998" }}
-                                    href="#!"
-                                    role="button"
-                                    data-te-ripple-init
-                                    data-te-ripple-color="light">
-
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="mr-2 h-3.5 w-3.5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path
-                                            d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-                                    </svg>
-                                    Continue with Facebook
-                                </a> */}
-                                {/* <a
-                                    class="mb-3 flex w-full items-center justify-center rounded bg-info px-7 pt-3 pb-2.5 text-center text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#54b4d3] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)] focus:bg-info-600 focus:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)] focus:outline-none focus:ring-0 active:bg-info-700 active:shadow-[0_8px_9px_-4px_rgba(84,180,211,0.3),0_4px_18px_0_rgba(84,180,211,0.2)]"
-                                    style={{ backgroundColor: "#55acee" }}
-                                    href="#!"
-                                    role="button"
-                                    data-te-ripple-init
-                                    data-te-ripple-color="light">
-
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="mr-2 h-3.5 w-3.5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path
-                                            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                                    </svg>
-                                    Continue with Twitter
-                                </a> */}
                             </form>
 
-                            <button onClick={googlesign} className="btn  btn-success w-full"> <img style={{ width: '30px' }} src={google} alt="" />Continue with google</button>
+                            <button onClick={googlesign} className="btn btn-success w-full">
+                                <img style={{ width: '30px' }} src={google} alt="Google" />
+                                Continue with Google
+                            </button>
                         </div>
                     </div>
                 </div>
