@@ -1,158 +1,79 @@
-import React from 'react';
-import Loading from '../../../../Shared/Loading/Loading';
-import quote from '../../../../assets/quote.svg';
-import Review from '../../../Reviews/Review';
-import { useQuery } from '@tanstack/react-query';
-import RightArrow from '../../../../assets/right arrow.png';
-import LeftArrow from '../../../../assets/left arrow.png';
-import Slider from 'react-slick';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Swal from 'sweetalert2';
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { FreeMode, Pagination } from "swiper";
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import { FaQuoteLeft } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import ReactStars from "react-stars"; // ⭐ Import React Stars
 
-
-const Testimonials = () => {
-    const { data: reviews = [], isError, isLoading, refetch } = useQuery({
-        queryKey: ['tools'],
+const ReviewSlider = () => {
+    const { data: reviews = [], isError, isLoading } = useQuery({
+        queryKey: ["reviews"],
         queryFn: async () => {
-            const res = await fetch('http://localhost:4040/review')
-            const data = await res.json()
-            return data
-        }
-    })
+            const res = await fetch("http://localhost:4040/review");
+            const data = await res.json();
+            return data;
+        },
+    });
 
-
-    const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-        <img src={LeftArrow} alt="prevArrow" {...props} />
-    );
-
-    const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-        <img src={RightArrow} alt="nextArrow" {...props} />
-    );
-
-    // const settings = {
-    //     dots: false,
-    //     infinite: false,
-    //     speed: 500,
-    //     slidesToShow: 4,
-    //     slidesToScroll: 1,
-    //     initialSlide: 0,
-    //     prevArrow: <SlickArrowLeft />,
-    //     nextArrow: <SlickArrowRight />,
-    // };
-
-    const Settings = {
-
-        // dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        // prevArrow: <SlickArrowLeft />,
-        // nextArrow: <SlickArrowRight />,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2,
-                    infinite: true,
-                    // dots: true
-                }
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2,
-                    initialSlide: 2
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                }
-            }
-        ]
-
-
-    }
-
-
-
-    if (isLoading) {
-        return <Loading></Loading>
-    }
-
-    if (isError) {
-        return Swal.fire({
-            title: "Fetch Error",
-            text: "Can Not Fatch Our tools",
-            icon: "error",
-        })
-    }
     return (
-        <section className='my-28' data-aos="fade-right">
-            <div className='flex justify-between'>
-                <div  >
-                    <h4 className='text-xl text-primary font-bold' >Testimonials</h4>
-                    <h2 className='text-3xl'>whats our <span>Customers</span>  say?</h2>
+        <section className="w-full py-24 px-6 lg:px-20 flex justify-center">
+            <div className="max-w-6xl w-full text-center">
+                <h2 className="text-4xl font-bold text-center mb-4">Happy Client Works</h2>
 
+                {/* 🔹 Custom Divider Design */}
+                <div className="flex justify-center items-center mb-12">
+                    <div className="w-20 h-1 bg-blue-500 rounded-lg"></div>
+                    <div className="w-3 h-3 bg-blue-500 rounded-full mx-2"></div>
+                    <div className="w-20 h-1 bg-blue-500 rounded-lg"></div>
                 </div>
-                <div>
-                    <img src={quote} className="w-14  lg:w-48" alt="" />
-                </div>
+
+                <Swiper
+                    modules={[Pagination, Autoplay]}
+                    spaceBetween={30}
+                    slidesPerView={1}
+                    breakpoints={{
+                        640: { slidesPerView: 1 },
+                        768: { slidesPerView: 2 },
+                        1024: { slidesPerView: 2 },
+                    }}
+                    pagination={{ clickable: true }}
+                    autoplay={{ delay: 3000, disableOnInteraction: false }}
+                    loop={true}
+                    className="py-12 flex justify-center"
+                >
+                    {[...reviews].reverse().map((review) => (
+                        <SwiperSlide key={review.id} className="flex justify-center">
+                            <div className="max-w-lg h-[320px] shadow-lg bg-white/20 backdrop-blur-lg p-8 rounded-xl flex flex-col justify-between relative">
+                                <FaQuoteLeft className="text-5xl text-blue-500 absolute top-6 left-6 opacity-20" />
+                                <p className="text-lg italic flex-grow">{review.message}</p>
+
+                                {/* ⭐ Rating Stars */}
+                                <div className="flex justify-center mt-4">
+                                    <ReactStars
+                                        count={5}
+                                        value={review.review}
+                                        size={24}
+                                        color2={"#ffd700"}
+                                        edit={false}
+                                    />
+                                </div>
+
+                                <div className="flex flex-col items-center mt-2">
+                                    <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-blue-500">
+                                        <img src={review.image} alt={review.reviewer} className="w-full h-full object-cover" />
+                                    </div>
+                                    <h4 className="text-lg font-semibold mt-2">{review.reviewer}</h4>
+                                    <p className="text-gray-500">{review.role}</p>
+                                </div>
+                            </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
             </div>
-            <div className='grid grid-cols-1 gap-3 m-8  h-full'>
-
-                <Slider  {...Settings}>
-
-                    {
-                        [...reviews].reverse().map(review => <Review key={review._id} review={review}></Review>)
-                    }
-
-
-                </Slider>
-
-
-
-                {/* <div>
-                        <h3>1</h3>
-                    </div>
-                    <div>
-                        <h3>2</h3>
-                    </div>
-                    <div>
-                        <h3>3</h3>
-                    </div>
-                    <div>
-                        <h3>4</h3>
-                    </div>
-                    <div>
-                        <h3>5</h3>
-                    </div>
-                    <div>
-                        <h3>6</h3>
-                    </div> */}
-
-
-
-
-
-
-
-
-
-
-
-            </div>
-
         </section>
     );
 };
 
-export default Testimonials;
+export default ReviewSlider;
