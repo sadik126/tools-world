@@ -18,12 +18,12 @@ const Signup = () => {
         formState: { errors, isValid },
         trigger,
         reset,
-      } = useForm({ mode: "onChange" });
-   
+    } = useForm({ mode: "onChange" });
 
-    const { createUser ,  updateUser , user } = useContext(Authcontext)
 
-   
+    const { createUser, updateUser, user } = useContext(Authcontext)
+
+
 
     const nevigate = useNavigate();
 
@@ -37,85 +37,85 @@ const Signup = () => {
     const imageurl = `https://api.imgbb.com/1/upload?&key=${imagehostkey}`;
 
     const onSubmit = async data => {
-        const imagefile = {image: data.image[0]}
-        const res = await allaxios.post (imageurl , imagefile , {
-            headers:{
-                'Content-Type':'multipart/form-data'
+        const imagefile = { image: data.image[0] }
+        const res = await allaxios.post(imageurl, imagefile, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
             }
         })
 
-        if (res.data.success){
+        if (res.data.success) {
             const image = res.data.data.display_url
-           await createUser(data.email , data.password)
-            .then(async(res)=> {
-                const useritem = {
-                    name: data.name,
-                    email: data.email,
-                    image: image
-                  }
+            await createUser(data.email, data.password)
+                .then(async (res) => {
+                    const useritem = {
+                        name: data.name,
+                        email: data.email,
+                        image: image
+                    }
 
-                 await updateUser(data.name , image)
-                  .then(async(res)=> {
-                   await allaxios.post('/users' , useritem)
-                  .then(async(res)=> {
-                  if(res.data.insertedId){
-                    reset()
-                   await Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "User created successfully",
-                        showConfirmButton: false,
-                        timer: 1500,
-                      });
-                     await nevigate("/");
-                  }
-                  })
-                  })
-                  .catch((error)=>console.log(error))
+                    await updateUser(data.name, image)
+                        .then(async (res) => {
+                            await allaxios.post('/users', useritem)
+                                .then(async (res) => {
+                                    if (res.data.insertedId) {
+                                        reset()
+                                        await Swal.fire({
+                                            position: "center",
+                                            icon: "success",
+                                            title: "User created successfully",
+                                            showConfirmButton: false,
+                                            timer: 1500,
+                                        });
+                                        await nevigate("/");
+                                    }
+                                })
+                        })
+                        .catch((error) => console.log(error))
 
-                
-            })
 
-            .catch((error)=>{
-                if (error.code === "auth/email-already-in-use") {
-                    Swal.fire({
-                      icon: "error",
-                      title: "User Already Exists",
-                      text: "This email is already registered. Please log in.",
-                      confirmButtonText: "OK",
-                    });
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Error",
-                      text: `Something went wrong: ${error.message}`,
-                    });
-                  }
-                // Swal.fire({
-                //     position: "center",
-                //     icon: "error",
-                //     title: `Error: ${error.message}`,
-                //     showConfirmButton: false,
-                //     timer: 1500,
-                //   });
-            })
+                })
 
-            .catch((error) => {
-                if (error.code === "auth/email-already-in-use") {
-                  Swal.fire({
-                    icon: "error",
-                    title: "User Already Exists",
-                    text: "This email is already registered. Please log in.",
-                    confirmButtonText: "OK",
-                  });
-                } else {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: `Something went wrong: ${error.message}`,
-                  });
-                }
-              });
+                .catch((error) => {
+                    if (error.code === "auth/email-already-in-use") {
+                        Swal.fire({
+                            icon: "error",
+                            title: "User Already Exists",
+                            text: "This email is already registered. Please log in.",
+                            confirmButtonText: "OK",
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: `Something went wrong: ${error.message}`,
+                        });
+                    }
+                    // Swal.fire({
+                    //     position: "center",
+                    //     icon: "error",
+                    //     title: `Error: ${error.message}`,
+                    //     showConfirmButton: false,
+                    //     timer: 1500,
+                    //   });
+                })
+
+                .catch((error) => {
+                    if (error.code === "auth/email-already-in-use") {
+                        Swal.fire({
+                            icon: "error",
+                            title: "User Already Exists",
+                            text: "This email is already registered. Please log in.",
+                            confirmButtonText: "OK",
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: `Something went wrong: ${error.message}`,
+                        });
+                    }
+                });
 
 
 
@@ -123,7 +123,7 @@ const Signup = () => {
 
 
         }
-     
+
     }
 
 
@@ -131,7 +131,7 @@ const Signup = () => {
     // const saveuser = (name, email, image) => {
     //     const user = { name: name, email: email, image: image }
 
-    //     fetch('http://localhost:4040/users', {
+    //     fetch('https://tools-server-aok2.onrender.com/users', {
     //         method: 'POST',
     //         headers: {
     //             'content-type': 'application/json'
@@ -169,7 +169,7 @@ const Signup = () => {
                                             pattern: { value: /^[a-zA-Z-/.\' ']{3,20}$/, message: 'Please enter valid name according to your NID' }
                                         })}
                                         type="text"
-                                      
+
                                         className={`input input-bordered w-full ${errors.name ? "input-error" : ""}`}
                                         onKeyUp={() => trigger("name")}
                                         id="exampleFormControlInput3"
@@ -246,19 +246,19 @@ const Signup = () => {
                                         id="exampleFormControlInput33"
                                         placeholder="Image"
                                         accept="image/*" />
-                                   
+
                                     <label className="label">
                                         {errors.image?.type === 'required' && <span className=" text-red-600 font-bold">{errors?.image?.message}</span>}
-                                  
+
 
 
                                     </label>
                                 </div>
 
                                 <div class="mb-6 flex items-center justify-between">
-                                  
+
                                     <p>Already have an account in TOOLS WORLD?<Link to="/login" className='text-secondary' > Login here</Link></p>
-                                
+
 
 
                                 </div>
@@ -267,13 +267,13 @@ const Signup = () => {
 
 
                                 <input
-                className="btn bg-orange-500"
-                type="submit"
-                value="Sign up"
-                disabled={!isValid}
-              />
-                     
-                               
+                                    className="btn bg-orange-500"
+                                    type="submit"
+                                    value="Sign up"
+                                    disabled={!isValid}
+                                />
+
+
                             </form>
                             {
                                 // signupError && <p className='text-red-600'>{signupError}</p>

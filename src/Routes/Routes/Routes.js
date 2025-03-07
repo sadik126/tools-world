@@ -56,12 +56,12 @@ const router = createBrowserRouter([
             {
                 path: '/purchase/:id',
                 element: <PrivateRoute><Purchase></Purchase></PrivateRoute>,
-                loader: ({ params }) => fetch(`http://localhost:4040/tools/${params.id}`)
+                loader: ({ params }) => fetch(`https://tools-server-aok2.onrender.com/tools/${params.id}`)
             },
             {
                 path: '/tools/:id',
                 element: <Toolsdetails></Toolsdetails>,
-                loader: ({ params }) => fetch(`http://localhost:4040/tools/${params.id}`)
+                loader: ({ params }) => fetch(`https://tools-server-aok2.onrender.com/tools/${params.id}`)
             },
 
         ]
@@ -117,7 +117,7 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/editproducts/:id',
                 element: <Adminroute><Edititems></Edititems></Adminroute>,
-                loader: ({ params }) => fetch(`http://localhost:4040/tools/${params.id}`)
+                loader: ({ params }) => fetch(`https://tools-server-aok2.onrender.com/tools/${params.id}`)
             },
             {
 
@@ -129,7 +129,7 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/payment/:id',
                 element: <PrivateRoute><Payment></Payment></PrivateRoute>,
-                loader: ({ params }) => fetch(`http://localhost:4040/booking/${params.id}`)
+                loader: ({ params }) => fetch(`https://tools-server-aok2.onrender.com/booking/${params.id}`)
             },
         ]
     }

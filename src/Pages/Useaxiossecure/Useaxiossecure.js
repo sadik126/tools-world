@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 export const axiossecure = axios.create({
-  baseURL: 'http://localhost:4040'
+  baseURL: 'https://tools-server-aok2.onrender.com'
 })
 const Useaxiossecure = () => {
   const { Logout } = useContext(Authcontext)

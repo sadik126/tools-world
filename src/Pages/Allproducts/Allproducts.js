@@ -7,7 +7,7 @@ const Allproducts = () => {
     const [tools, setTools] = useState([])
 
     useEffect(() => {
-        fetch('http://localhost:4040/tools')
+        fetch('https://tools-server-aok2.onrender.com/tools')
             .then(res => res.json())
             .then(data => {
                 console.log(data)
@@ -28,7 +28,7 @@ const Allproducts = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                const url = `http://localhost:4040/tools/${id}`
+                const url = `https://tools-server-aok2.onrender.com/tools/${id}`
                 fetch(url, { method: 'DELETE' })
                     .then(res => res.json())
                     .then(() => {

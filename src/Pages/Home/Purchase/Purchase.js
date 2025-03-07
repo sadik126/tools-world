@@ -13,8 +13,8 @@ const Purchase = () => {
     const { user } = useContext(Authcontext);
 
 
-    const { register, formState: { errors }, handleSubmit, reset , setValue } = useForm({
-        
+    const { register, formState: { errors }, handleSubmit, reset, setValue } = useForm({
+
 
     });
 
@@ -23,7 +23,7 @@ const Purchase = () => {
         if (user) {
             setValue("name", user.displayName);
             setValue("email", user.email);
-            setValue("phone", "+88"); 
+            setValue("phone", "+88");
         }
     }, [user, setValue]);
 
@@ -40,7 +40,7 @@ const Purchase = () => {
     const { data: bookings = [], isError, isLoading, refetch } = useQuery({
         queryKey: ['bookings'],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:4040/tools/${booking._id}`)
+            const res = await fetch(`https://tools-server-aok2.onrender.com/tools/${booking._id}`)
             const data = await res.json()
             return data
         }
@@ -66,7 +66,7 @@ const Purchase = () => {
             phone: data.phone,
             amount: data.amount
         }
-        fetch('http://localhost:4040/booking', {
+        fetch('https://tools-server-aok2.onrender.com/booking', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -98,7 +98,7 @@ const Purchase = () => {
     const updateData = (amount) => {
         const updatedamount = parseInt(booking.available) - parseInt(amount);
         console.log(updatedamount)
-        const url = ` http://localhost:4040/updatedtools/${booking._id}`
+        const url = ` https://tools-server-aok2.onrender.com/updatedtools/${booking._id}`
         fetch(url, {
             method: 'PUT',
             headers: {
@@ -184,7 +184,7 @@ const Purchase = () => {
                                         minLength: { value: 11, message: 'Your digit is lower than 11' },
                                         maxLength: { value: 15, message: "Your digit is higher than 15" }
 
-                                    })} type="text" placeholder="phone"   className="input input-bordered" />
+                                    })} type="text" placeholder="phone" className="input input-bordered" />
 
                                 </div>
 

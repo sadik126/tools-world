@@ -54,7 +54,7 @@ const Users = () => {
 
 
     const deleteUser = async (id) => {
-        // fetch(`http://localhost:4040/user/${user._id}`, {
+        // fetch(`https://tools-server-aok2.onrender.com/user/${user._id}`, {
         //     method: 'DELETE'
         // })
         //     .then(res => res.json())

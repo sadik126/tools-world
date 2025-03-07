@@ -28,7 +28,7 @@ const Reviews = () => {
         };
 
         try {
-            const res = await fetch('http://localhost:4040/review', {
+            const res = await fetch('https://tools-server-aok2.onrender.com/review', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ const ReviewSlider = () => {
     const { data: reviews = [], isError, isLoading } = useQuery({
         queryKey: ["reviews"],
         queryFn: async () => {
-            const res = await fetch("http://localhost:4040/review");
+            const res = await fetch("https://tools-server-aok2.onrender.com/review");
             const data = await res.json();
             return data;
         },

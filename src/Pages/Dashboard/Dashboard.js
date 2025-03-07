@@ -14,7 +14,7 @@ const Dashboard = () => {
         setdeletingAppointment(null)
     }
 
-    const url = `http://localhost:4040/booking?email=${user?.email}`
+    const url = `https://tools-server-aok2.onrender.com/booking?email=${user?.email}`
 
     const { data: bookings = [], isLoading, refetch } = useQuery({
         queryKey: ['bookings', user?.email],
@@ -35,7 +35,7 @@ const Dashboard = () => {
     }
 
     const deleteBooking = (booking) => {
-        fetch(`http://localhost:4040/bookings/${booking._id}`, {
+        fetch(`https://tools-server-aok2.onrender.com/bookings/${booking._id}`, {
             method: 'DELETE'
         })
             .then(res => res.json())

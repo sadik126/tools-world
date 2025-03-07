@@ -2,7 +2,7 @@ import axios from 'axios';
 import React from 'react';
 
 const allaxios = axios.create({
-    baseURL:'http://localhost:4040'
+    baseURL: 'https://tools-server-aok2.onrender.com'
 })
 
 const Axiospublic = () => {
